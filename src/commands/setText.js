@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { mqtt_init, publish } = require("../common/_mqtt.js");
 const { topic } = require("../resources/config.json");
-const { mqtt_init, publish } = require("../common/_mqtt");
 
 module.exports = {
     data: new SlashCommandBuilder()
