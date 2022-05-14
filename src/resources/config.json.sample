@@ -8,6 +8,7 @@
     "password": "YOUR GRAFANA PASSWORD HERE"
 
     "mqtt_server": "IP TO MQTT SERVER HERE", 
+    "mqtt_topic": "TOPIC FOR MQTT HERE", 
     "mqtt_user": "MQTT USERNAME HERE",
     "mqtt_pass": "MQTT PASSWORD HERE"
 }
