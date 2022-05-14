@@ -2,14 +2,15 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./resources/config.json');
 const fs = require('node:fs');
 
-client.commands = new Collection();
 const client = new Client({ intents: Intents.FLAGS.GUILDS });
+client.commands = new Collection();
 
 
 
 // LOAD EVENTS AND COMMANDS
 const eventFiles = fs.readdirSync('./src/events').filter(file => file.endsWith('.js'));
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
+
 
 for (const file of eventFiles) {
 	const event = require(`./events/${file}`);
