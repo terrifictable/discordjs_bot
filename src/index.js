@@ -2,7 +2,7 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./resources/config.json');
 const fs = require('node:fs');
 
-const client = new Client({ intents: Intents.FLAGS.GUILDS });
+const client = new Client({ intents: [ Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILDS ] });
 client.commands = new Collection();
 
 
@@ -24,6 +24,8 @@ for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	client.commands.set(command.data.name, command);
 }
+
+
 
 
 
