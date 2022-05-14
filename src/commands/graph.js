@@ -12,23 +12,16 @@ const fs = require('node:fs');
 module.exports = {
     data: new SlashCommandBuilder()
             .setName('graph')
-            .setDescription('Returns an image of Grafana graph')
-            .addStringOption(
-                option => option.setName('index')
-                    .setDescription('Graph Index (1 or 2)')
-            ),
+            .setDescription('Returns an image of Grafana graph'),
             
     async execute(interaction) {
         var currUnixTime            = new Date().getTime();
         var graphStartUnixTime      = currUnixTime - 86400000;
-        var url1                     = `http://${grafana}/render/d-solo/y-0Qde_nz/airgiano-sdc30?orgId=1&from=${graphStartUnixTime}&to=${currUnixTime}&refresh=5s&panelId=2&width=2000&height=600&tz=Europe%2FBerlin`
-        var url2                     = `http://${grafana}/render/d-solo/9aH8LGX7z/blenderdcbot?orgId=1&refresh=5s&from=${graphStartUnixTime}&to=${currUnixTime}&panelId=2&width=1000&height=500&tz=Europe%2FBerlin`
+        var url                     = `http://${grafana}/render/d-solo/y-0Qde_nz/airgiano-sdc30?orgId=1&from=${graphStartUnixTime}&to=${currUnixTime}&refresh=5s&panelId=2&width=2000&height=600&tz=Europe%2FBerlin`
         var auth                    = "Basic " + new Buffer.alloc((username + ":" + password).length, username + ":" + password).toString("base64"); // Grafana Username and Password authentication
         
         await interaction.deferReply(); // wait until the reply is edited, for interaction token something to not be invalid, incase this takes longer than 3 secs
         
-        var url = url1;
-        if (interaction.options.getString('input') == "2") url = url2;
         
         try { fse.removeSync("./data/image.jpg"); } // Remove old image
         catch (err) { "" } // catch (incase there is no image)
