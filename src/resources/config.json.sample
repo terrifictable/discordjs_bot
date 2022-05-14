@@ -3,6 +3,7 @@
     "guildId": "YOUR GUILD ID",
     "clientId": "BOT ID",
 
+    "grafana": "GRAFANA IP : GRAFANA PORT",
     "username": "YOUR GRAFANA USERNAME HERE",
     "password": "YOUR GRAFANA PASSWORD HERE"
 }
