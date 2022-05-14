@@ -7,3 +7,4 @@ config.json
 # folders
 node_modules
 data
+.vscode
