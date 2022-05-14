@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node src/"
+    "run": "node src/deploy_commands.js & node src/"
   },
   "keywords": [],
   "author": "TerrificTable",
