@@ -1,2 +1,6 @@
+# files
 config.js
+.eslintrc
 
+# folders
+node_modules
