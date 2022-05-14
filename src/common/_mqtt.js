@@ -6,7 +6,7 @@ const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
 
 const connectUrl = `mqtt://${mqtt_server}:${port}`;
 
-module.export = function mqtt_init() {
+module.exports = function mqtt_init() {
     const client = mqtt.connect(connectUrl, {
         clientId,
         clean: true,
@@ -19,7 +19,7 @@ module.export = function mqtt_init() {
     return client;
 }
 
-module.export = function subscribe(client, topic) {
+module.exports = function subscribe(client, topic) {
     client.on('connect', () => {
         console.log('Connected')
         client.subscribe([topic], () => {
@@ -28,7 +28,7 @@ module.export = function subscribe(client, topic) {
     });
 }
 
-module.export = function publish(client, topic, message) {
+module.exports = function publish(client, topic, message) {
     client.on('connect', () => {
         client.publish(topic, message, { qos: 2, retain: false }, (error) => {
             if (error) {
