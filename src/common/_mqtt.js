@@ -1,5 +1,5 @@
 const mqtt = require('mqtt')
-const { mqtt_server, mqtt_user, mqtt_pass, mqtt_topic } = require("../resources/config.json")
+const { mqtt_server, mqtt_user, mqtt_pass } = require("../resources/config.json")
 
 const port = '1883'
 const clientId = `mqtt_${Math.random().toString(16).slice(3)}`;
