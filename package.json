@@ -15,8 +15,7 @@
     "@discordjs/rest": "^0.4.1",
     "discord-api-types": "^0.32.1",
     "discord.js": "^13.7.0",
-    "fs": "^0.0.1-security",
-    "request": "^2.88.2"
+    "fs-extra": "^10.1.0"
   },
   "devDependencies": {
     "eslint": "^8.15.0"
