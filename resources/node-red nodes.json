@@ -1,0 +1,202 @@
+[
+    {
+        "id": "9f8b220e83c5ca5d",
+        "type": "inject",
+        "z": "718241bbf3f29dd8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 110,
+        "y": 40,
+        "wires": [
+            [
+                "54941bdfa543f8fc"
+            ]
+        ]
+    },
+    {
+        "id": "54941bdfa543f8fc",
+        "type": "function",
+        "z": "718241bbf3f29dd8",
+        "name": "format message",
+        "func": "var date = new Date().toLocaleDateString(\"de-DE\");\nvar hour = new Date().toLocaleTimeString(\"de-DE\");\nvar old_line        = flow.get(\"message\");\nvar new_line_amt    = 2;\nvar line_width      = 8;\nvar new_lines       = \"\";\nvar line            = \"\";\n\n\nif (flow.get(\"message\") == undefined) {\n    flow.set(\"message\", \"Hallo!\")\n}\n\nnode.status({\n        fill: \"red\",\n        shape:\"dot\",\n        text:flow.get(\"message\")\n        \n    }\n);\n\n\nif (flow.get(\"countdown\")) {\n    if (flow.get(\"message\").includes(\"start\")) {\n        var countdown = flow.get(\"time\");\n        var timeOver = false;\n        \n        timeLeft = countdown - 1;\n        \n        \n        var mins = flow.get(\"mins\");\n        while (timeLeft > 60) {\n            mins        += 1;\n            timeLeft    -= 60;\n        }\n        if (timeLeft <= 0 && mins > 0) {\n            timeLeft = 60;\n            mins -= 1;\n        }\n        flow.set(\"mins\", mins);\n        flow.set(\"time\", timeLeft);\n        \n        var n = \"\";\n        if (timeLeft < 10) {\n            n = \"0\";\n        }\n        \n        var formated = mins + \":\" + n + timeLeft + \"min\";\n        old_line = \"TimeLeft:\\n  \" + formated;\n        \n        if (mins <= 0 && timeLeft <= 0) {\n            old_line = \"Time Up\\n\";\n        }\n        \n    }\n    \n    if (flow.get(\"message\").includes(\"pause\")) {\n        var countdown = flow.get(\"time\");\n        \n        \n        var mins = flow.get(\"mins\");\n        while (timeLeft > 60) {\n            mins        += 1;\n            timeLeft    -= 60;\n        }\n        flow.set(\"mins\", mins);\n        flow.set(\"time\", timeLeft);\n        \n        var formated = mins + \":\" + timeLeft + \"min\";\n        old_line = \"TimeLeft:\\n  \" + formated;\n    }\n    \n    if (flow.get(\"message\").includes(\"resume\")) {\n        flow.set(\"message\", \".countdown start \" + (parseInt(flow.get(\"time\")) + parseInt(flow.get(\"mins\"))))\n    }\n}\n\nif (flow.get(\"timer\")) {\n    if (flow.get(\"message\").includes(\"start\")) {\n        \n        var seconds = flow.get(\"seconds\");\n        var mins = flow.get(\"mins\");\n        \n        seconds += 1;\n        if (seconds >= 60) {\n            seconds -= 60;\n            mins    += 1;\n        }\n        \n        var n = \"\";\n        if (seconds < 10) {\n            n = \"0\";\n        }\n        \n        old_line = \"Timer: \\n \" + mins + \".\" + n + seconds + \"min\";\n        \n        flow.set(\"mins\",    mins);\n        flow.set(\"seconds\", seconds);\n        \n    }\n    \n    if (flow.get(\"message\").includes(\"stop\")) {\n        flow.set(\"message\", flow.get(\"backup\"));\n        old_line = flow.get(\"message\");\n    }\n    \n    if (flow.get(\"message\").includes(\"pause\")) {\n        var seconds = flow.get(\"seconds\");\n        var mins = flow.get(\"mins\");\n        \n        if (seconds >= 60) {\n            seconds -= 60;\n            mins    += 1;\n        }\n        \n        var n = \"\";\n        if (seconds < 10) {\n            n = \"0\";\n        }\n        \n        old_line = \"Timer: \\n \" + mins + \".\" + n + seconds + \"min\";\n        \n        flow.set(\"mins\",    mins);\n        flow.set(\"seconds\", seconds);\n    }\n    \n    if (flow.get(\"message\").includes(\"resume\")) {\n        flow.set(\"message\", \".timer start\")\n    }\n    \n}\n\n\n\ntry {\n    \n    if (old_line.length > line_width) {\n        line += old_line.substring(0, line_width) + \"  \" + old_line.substring(line_width + 1, old_line.length);\n    }\n    else {\n        line += old_line;\n    }\n    \n    \n    if (flow.get(\"message\").length > line_width) new_line_amt--;\n    for (i = 0; i < new_line_amt; i++) {\n        new_lines += \"\\n\";\n    }\n    \n} catch (e) {\n    node.warn(e);\n    \n    line = \"\";\n    new_lines = \"\\n\\n\";\n}\n\n\n\n\nvar result = \"\";\nif (flow.get(\"message\").includes(\".leds\")) {\n    node.warn(\"LEDS\");\n    line = flow.get(\"backup\");\n    flow.set(\"message\", flow.get(\"backup\"));\n    \n    result = hour + \"\\n\" + old_line + new_lines + date;\n} else {\n    result = hour + \"\\n\" + line     + new_lines + date;\n}\n\nvar message = {\n    \"topic\": \"AirGiano/json\",\n    payload: result\n};\n\nreturn message;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Der Code hier wird ausgeführt,\n// wenn der Node gestartet wird\n\nflow.set(\"topic\", \"AirGiano/json\")\n",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 40,
+        "wires": [
+            [
+                "751c08c6b3d0287e",
+                "8784f3f3e4d20d2c"
+            ]
+        ]
+    },
+    {
+        "id": "95bd7b5b2b4314ed",
+        "type": "mqtt in",
+        "z": "718241bbf3f29dd8",
+        "name": "",
+        "topic": "AirGiano/text",
+        "qos": "2",
+        "datatype": "utf8",
+        "broker": "0d80ef36bb5783fb",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 140,
+        "wires": [
+            [
+                "01636e53e0e27a8c",
+                "ce746e39c47d0347"
+            ]
+        ]
+    },
+    {
+        "id": "01636e53e0e27a8c",
+        "type": "debug",
+        "z": "718241bbf3f29dd8",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 310,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "ce746e39c47d0347",
+        "type": "function",
+        "z": "718241bbf3f29dd8",
+        "name": "flow -> message / backup / etc",
+        "func": "if (!msg.payload.includes(\".leds\") && !msg.payload.includes(\".countdown\") && !msg.payload.includes(\".timer\")) {\n    flow.set(\"backup\", msg.payload.replace(\"\\\\n\", \"\\n\"));\n}\nflow.set(\"message\", msg.payload.replace(\"\\\\n\", \"\\n\"));\n\nif (msg.payload.includes(\".timer\")) {\n    if (msg.payload.includes(\"start\")) {\n        node.warn(\"Timer: Start\");\n        flow.set(\"seconds\", 0);\n        flow.set(\"mins\", 0);\n        flow.set(\"timer\", true);\n    }\n    else if (msg.payload.includes(\"stop\")) {\n        node.warn(\"Timer: Stop\");\n        flow.set(\"message\", flow.get(\"backup\"));\n        flow.set(\"seconds\", 0);\n        flow.set(\"mins\", 0);\n        flow.set(\"timer\", false);\n    }\n    \n}\n\nif (msg.payload.includes(\".countdown\")) {\n    \n    if (msg.payload.includes(\"start\")) {\n        node.warn(\"Countdown: Start\");\n        flow.set(\"mins\", 0);\n        flow.set(\"countdown\", true);\n        flow.set(\"time\", msg.payload.split(\" \")[2]);\n    }\n    else if (msg.payload.includes(\"stop\")) {\n        node.warn(\"Countdown: Stop\");\n        flow.set(\"countdown\", false);\n        flow.set(\"mins\", 0);\n        flow.set(\"time\", 0);\n        \n        flow.set(\"message\", flow.get(\"backup\"));\n    }\n    \n}\n\n\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "751c08c6b3d0287e",
+        "type": "function",
+        "z": "718241bbf3f29dd8",
+        "name": "create json",
+        "func": "var length = 0;\nvar color = \"\";\nvar delay = 0;\n\nif (!msg.payload.includes(\".leds\")) {\n    if (delay   == undefined)    delay     = 0;\n    if (length  == undefined)    length    = 0;\n    if (color   == undefined)    color     = \"\";\n}\n\nvar result = {\n    \"message\": msg.payload,\n    \"color\": color,\n    \"delay\": delay,\n    \"length\": length\n}\n\nmessage = {\n    \"topic\": flow.get(\"topic\"),\n    \"payload\": result\n}\n\nreturn message;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 530,
+        "y": 40,
+        "wires": [
+            [
+                "64bff7751f80ccea"
+            ]
+        ]
+    },
+    {
+        "id": "64bff7751f80ccea",
+        "type": "json",
+        "z": "718241bbf3f29dd8",
+        "name": "js json -> string",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 700,
+        "y": 40,
+        "wires": [
+            [
+                "aa2055b078ea128d"
+            ]
+        ]
+    },
+    {
+        "id": "8784f3f3e4d20d2c",
+        "type": "debug",
+        "z": "718241bbf3f29dd8",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 530,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "aa2055b078ea128d",
+        "type": "mqtt out",
+        "z": "718241bbf3f29dd8",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "0d80ef36bb5783fb",
+        "x": 870,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0d80ef36bb5783fb",
+        "type": "mqtt-broker",
+        "name": "localhost",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    }
+]
