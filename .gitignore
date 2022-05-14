@@ -1,6 +1,8 @@
 # files
 config.json
 .eslintrc
+*.png
+*.jpg
 
 # folders
 node_modules
