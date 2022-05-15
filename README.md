@@ -12,3 +12,5 @@ maybe i will put code to turn on (and off) leds into the bot too
 <br>
 
 License: [GNU General Public License Version 3](https://github.com/TerrificTable/discordjs_bot/blob/master/LICENSE)
+
+<a href="https://www.youtube.com/watch?v=WAgpzc_J6xA&t=978s">Youtube Video</a>
